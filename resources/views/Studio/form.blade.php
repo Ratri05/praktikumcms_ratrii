@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 <div style="background-color:rgb(235, 189, 7); padding: 20px; border-radius: 10px; border: 1px solid #d4af37;">
+=======
+<div style="background-color: #fff8dc; padding: 20px; border-radius: 10px; border: 1px solid #d4af37;">
+>>>>>>> 350667786e238237a3b63676329cf4b8de145d41
     <div style="margin-bottom: 15px;">
         <label for="nomor_studio" style="display: block; font-weight: bold; color: #b8860b;">Nomor Studio</label>
         <input type="text" name="nomor_studio" id="nomor_studio" class="form-control" 

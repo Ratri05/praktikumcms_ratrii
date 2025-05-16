@@ -104,6 +104,7 @@ class PenggunaController extends Controller
         return view('pengguna.index', ['pengguna' => $pengguna])
             ->with('success', 'Pengguna berhasil dihapus (simulasi).');
     }
+<<<<<<< HEAD
     public function confirmDelete($id)
     {
         $penggunaArray = collect($this->getDummyData())->firstWhere('id', (int)$id);
@@ -114,4 +115,6 @@ class PenggunaController extends Controller
         return view('pengguna.confirmDelete', compact('pengguna'));
     }
 
+=======
+>>>>>>> 350667786e238237a3b63676329cf4b8de145d41
 }

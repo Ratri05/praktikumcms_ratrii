@@ -101,6 +101,7 @@ class FilmController extends Controller
         return view('film.index', ['film' => $filmList])
             ->with('success', 'Film berhasil dihapus (simulasi).');
     }
+<<<<<<< HEAD
     public function confirmDelete($id)
     {
         $filmArray = collect($this->getDummyData())->firstWhere('id', (int)$id);
@@ -111,4 +112,6 @@ class FilmController extends Controller
         return view('film.confirmDelete', compact('film'));
     }
 
+=======
+>>>>>>> 350667786e238237a3b63676329cf4b8de145d41
 }
