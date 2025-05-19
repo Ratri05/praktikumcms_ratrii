@@ -8,7 +8,7 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="/karyawan">Karyawan</a></li>
                 <li class="nav-item"><a class="nav-link" href="/studio">Studio</a></li>
-                <li class="nav-item"><a class="nav-link" href="/film">Film</a></li>
+                <li class="nav-item"><a class="nav-link" href="/films">Film</a></li>
                 <li class="nav-item"><a class="nav-link" href="/pengguna">Pengguna</a></li>
                 <li class="nav-item"><a class="nav-link" href="/tiket">Tiket</a></li>
                 <li class="nav-item"><a class="nav-link" href="/transaksi">Transaksi</a></li>

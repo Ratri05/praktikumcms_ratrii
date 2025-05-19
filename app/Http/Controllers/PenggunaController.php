@@ -2,46 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pengguna;
 use Illuminate\Http\Request;
 
 class PenggunaController extends Controller
 {
-    // Fungsi untuk mengambil dummy data
-    private function getDummyData()
-    {
-        return [
-            (object)[
-                'id' => 1,
-                'nama' => 'Dina',
-                'email' => 'dina@example.com',
-                'no_telepon' => '0811223344',
-                'alamat' => 'Jl. Kenangan',
-                'kata_sandi' => '****'
-            ],
-            (object)[
-                'id' => 2,
-                'nama' => 'Aldi',
-                'email' => 'aldi@example.com',
-                'no_telepon' => '0811334455',
-                'alamat' => 'Jl. Mawar',
-                'kata_sandi' => '****'
-            ]
-        ];
-    }
-
     public function index()
     {
-        $pengguna = $this->getDummyData();
+        $pengguna = Pengguna::all();
         return view('pengguna.index', compact('pengguna'));
     }
 
     public function show($id)
     {
-        $pengguna = collect($this->getDummyData())->firstWhere('id', $id);
-        if (!$pengguna) {
-            abort(404, 'Pengguna tidak ditemukan');
-        }
-
+        $pengguna = Pengguna::findOrFail($id);
         return view('pengguna.show', compact('pengguna'));
     }
 
@@ -52,69 +26,63 @@ class PenggunaController extends Controller
 
     public function store(Request $request)
     {
-        $newUser = (object)[
-            'id' => rand(3, 100),
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'no_telepon' => $request->no_telepon,
-            'alamat' => $request->alamat,
-            'kata_sandi' => $request->kata_sandi
-        ];
+        $validated = $request->validate([
+            'nama'        => 'required|string|max:255',
+            'email'       => 'required|email|unique:penggunas',
+            'no_telepon'  => 'required|string|max:20',
+            'alamat'      => 'required|string',
+            'kata_sandi'  => 'required|string|min:6',
+        ]);
 
-        $pengguna = $this->getDummyData();
-        $pengguna[] = $newUser;
+        $validated['kata_sandi'] = bcrypt($validated['kata_sandi']);
+        Pengguna::create($validated);
 
-        return view('pengguna.index', compact('pengguna'))
-            ->with('success', 'Pengguna berhasil ditambahkan (simulasi).');
+        return redirect()->route('pengguna.index')
+                         ->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
     public function edit($id)
     {
-        $pengguna = collect($this->getDummyData())->firstWhere('id', $id);
-        if (!$pengguna) {
-            abort(404, 'Pengguna tidak ditemukan');
-        }
-
+        $pengguna = Pengguna::findOrFail($id);
         return view('pengguna.edit', compact('pengguna'));
     }
 
     public function update(Request $request, $id)
     {
-        $pengguna = collect($this->getDummyData())->map(function ($item) use ($id, $request) {
-            if ($item->id == $id) {
-                $item->nama = $request->nama;
-                $item->email = $request->email;
-                $item->no_telepon = $request->no_telepon;
-                $item->alamat = $request->alamat;
-                $item->kata_sandi = $request->kata_sandi;
-            }
-            return $item;
-        })->all();
+        $pengguna = Pengguna::findOrFail($id);
 
-        return view('pengguna.index', ['pengguna' => $pengguna])
-            ->with('success', 'Pengguna berhasil diubah (simulasi).');
+        $validated = $request->validate([
+            'nama'        => 'required|string|max:255',
+            'email'       => 'required|email|unique:penggunas,email,' . $id,
+            'no_telepon'  => 'required|string|max:20',
+            'alamat'      => 'required|string',
+            'kata_sandi'  => 'nullable|string|min:6',
+        ]);
+
+        if ($request->filled('kata_sandi')) {
+            $validated['kata_sandi'] = bcrypt($validated['kata_sandi']);
+        } else {
+            unset($validated['kata_sandi']);
+        }
+
+        $pengguna->update($validated);
+
+        return redirect()->route('pengguna.index')
+                         ->with('success', 'Pengguna berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $pengguna = collect($this->getDummyData())->reject(function ($item) use ($id) {
-            return $item->id == $id;
-        })->values()->all();
+        $pengguna = Pengguna::findOrFail($id);
+        $pengguna->delete();
 
-        return view('pengguna.index', ['pengguna' => $pengguna])
-            ->with('success', 'Pengguna berhasil dihapus (simulasi).');
+        return redirect()->route('pengguna.index')
+                         ->with('success', 'Pengguna berhasil dihapus.');
     }
-<<<<<<< HEAD
+
     public function confirmDelete($id)
     {
-        $penggunaArray = collect($this->getDummyData())->firstWhere('id', (int)$id);
-        if (!$penggunaArray) {
-            abort(404);
-        }
-        $pengguna = (object) $penggunaArray;
+        $pengguna = Pengguna::findOrFail($id);
         return view('pengguna.confirmDelete', compact('pengguna'));
     }
-
-=======
->>>>>>> 350667786e238237a3b63676329cf4b8de145d41
 }

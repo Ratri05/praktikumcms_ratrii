@@ -6,43 +6,10 @@ use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
 {
-<<<<<<< HEAD
-    // Method untuk data dummy transaksi
+    // Method untuk mendapatkan data dummy transaksi
     private function getDummyData()
     {
         return [
-            [
-                'id' => 1,
-                'tanggal_transaksi' => '2025-05-01',
-                'metode_pembayaran' => 'Kartu Kredit',
-                'total_pembayaran' => 75000,
-            ],
-            [
-                'id' => 2,
-                'tanggal_transaksi' => '2025-05-02',
-                'metode_pembayaran' => 'Tunai',
-                'total_pembayaran' => 50000,
-            ],
-        ];
-    }
-
-    // Menampilkan halaman konfirmasi hapus
-    public function confirmDelete($id)
-    {
-        $transaksiArray = collect($this->getDummyData())->firstWhere('id', (int)$id);
-        if (!$transaksiArray) {
-            abort(404, 'Transaksi tidak ditemukan.');
-        }
-        $transaksi = (object) $transaksiArray;
-        return view('transaksi.confirmDelete', compact('transaksi'));
-    }
-
-    // Metode lain seperti index, create, store, edit, update, destroy bisa kamu buat serupa
-=======
-    // Daftar transaksi dummy data
-    public function index()
-    {
-        $transaksi = [
             (object)[
                 'id' => 1,
                 'tanggal_transaksi' => '2025-05-01',
@@ -56,42 +23,28 @@ class TransaksiController extends Controller
                 'total_pembayaran' => 50000
             ]
         ];
+    }
 
+    public function index()
+    {
+        $transaksi = $this->getDummyData();
         return view('transaksi.index', compact('transaksi'));
     }
 
-    // Menampilkan detail transaksi berdasarkan ID
     public function show($id)
     {
-        $transaksi = collect([
-            (object)[
-                'id' => 1,
-                'tanggal_transaksi' => '2025-05-01',
-                'metode_pembayaran' => 'E-Wallet',
-                'total_pembayaran' => 100000
-            ],
-            (object)[
-                'id' => 2,
-                'tanggal_transaksi' => '2025-05-02',
-                'metode_pembayaran' => 'Tunai',
-                'total_pembayaran' => 50000
-            ]
-        ])->firstWhere('id', $id);
-
+        $transaksi = collect($this->getDummyData())->firstWhere('id', $id);
         if (!$transaksi) {
             abort(404, 'Transaksi tidak ditemukan.');
         }
-
         return view('transaksi.show', compact('transaksi'));
     }
 
-    // Menampilkan form untuk membuat transaksi baru
     public function create()
     {
         return view('transaksi.create');
     }
 
-    // Menyimpan transaksi baru
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -101,44 +54,28 @@ class TransaksiController extends Controller
         ]);
 
         $newTransaksi = (object)[
-            'id' => 3, // Generate ID baru statis untuk sementara
+            'id' => rand(3, 100),
             'tanggal_transaksi' => $validated['tanggal_transaksi'],
             'metode_pembayaran' => $validated['metode_pembayaran'],
             'total_pembayaran' => $validated['total_pembayaran']
         ];
 
-        // Simpan transaksi baru ke dalam array (dalam contoh ini array tidak berkelanjutan)
-        // Anda harus memodifikasi ini jika menggunakan database.
+        $transaksi = $this->getDummyData();
+        $transaksi[] = $newTransaksi;
 
-        return redirect()->route('transaksi.index');
+        return view('transaksi.index', compact('transaksi'))
+            ->with('success', 'Transaksi berhasil ditambahkan (simulasi).');
     }
 
-    // Menampilkan form untuk edit transaksi
     public function edit($id)
     {
-        $transaksi = collect([
-            (object)[
-                'id' => 1,
-                'tanggal_transaksi' => '2025-05-01',
-                'metode_pembayaran' => 'E-Wallet',
-                'total_pembayaran' => 100000
-            ],
-            (object)[
-                'id' => 2,
-                'tanggal_transaksi' => '2025-05-02',
-                'metode_pembayaran' => 'Tunai',
-                'total_pembayaran' => 50000
-            ]
-        ])->firstWhere('id', $id);
-
+        $transaksi = collect($this->getDummyData())->firstWhere('id', $id);
         if (!$transaksi) {
             abort(404, 'Transaksi tidak ditemukan.');
         }
-
         return view('transaksi.edit', compact('transaksi'));
     }
 
-    // Mengupdate transaksi yang sudah ada
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -147,61 +84,35 @@ class TransaksiController extends Controller
             'total_pembayaran' => 'required|numeric'
         ]);
 
-        $transaksi = collect([
-            (object)[
-                'id' => 1,
-                'tanggal_transaksi' => '2025-05-01',
-                'metode_pembayaran' => 'E-Wallet',
-                'total_pembayaran' => 100000
-            ],
-            (object)[
-                'id' => 2,
-                'tanggal_transaksi' => '2025-05-02',
-                'metode_pembayaran' => 'Tunai',
-                'total_pembayaran' => 50000
-            ]
-        ])->firstWhere('id', $id);
+        $transaksiList = collect($this->getDummyData())->map(function ($transaksi) use ($id, $validated) {
+            if ($transaksi->id == $id) {
+                $transaksi->tanggal_transaksi = $validated['tanggal_transaksi'];
+                $transaksi->metode_pembayaran = $validated['metode_pembayaran'];
+                $transaksi->total_pembayaran = $validated['total_pembayaran'];
+            }
+            return $transaksi;
+        })->all();
 
+        return view('transaksi.index', ['transaksi' => $transaksiList])
+            ->with('success', 'Transaksi berhasil diperbarui (simulasi).');
+    }
+
+    public function destroy($id)
+    {
+        $transaksiList = collect($this->getDummyData())->reject(function ($transaksi) use ($id) {
+            return $transaksi->id == $id;
+        })->values()->all();
+
+        return view('transaksi.index', ['transaksi' => $transaksiList])
+            ->with('success', 'Transaksi berhasil dihapus (simulasi).');
+    }
+
+    public function confirmDelete($id)
+    {
+        $transaksi = collect($this->getDummyData())->firstWhere('id', (int)$id);
         if (!$transaksi) {
             abort(404, 'Transaksi tidak ditemukan.');
         }
-
-        // Update transaksi dengan data baru
-        $transaksi->tanggal_transaksi = $validated['tanggal_transaksi'];
-        $transaksi->metode_pembayaran = $validated['metode_pembayaran'];
-        $transaksi->total_pembayaran = $validated['total_pembayaran'];
-
-        return redirect()->route('transaksi.index');
+        return view('transaksi.confirmDelete', compact('transaksi'));
     }
-
-    // Menghapus transaksi berdasarkan ID
-    public function destroy($id)
-    {
-        $transaksiList = [
-            (object)[
-                'id' => 1,
-                'tanggal_transaksi' => '2025-05-01',
-                'metode_pembayaran' => 'E-Wallet',
-                'total_pembayaran' => 100000
-            ],
-            (object)[
-                'id' => 2,
-                'tanggal_transaksi' => '2025-05-02',
-                'metode_pembayaran' => 'Tunai',
-                'total_pembayaran' => 50000
-            ]
-        ];
-
-        $transaksiIndex = collect($transaksiList)->search(fn($item) => $item->id == $id);
-
-        if ($transaksiIndex === false) {
-            abort(404, 'Transaksi tidak ditemukan.');
-        }
-
-        // Hapus transaksi dari array (sama seperti data array)
-        array_splice($transaksiList, $transaksiIndex, 1);
-
-        return redirect()->route('transaksi.index');
-    }
->>>>>>> 350667786e238237a3b63676329cf4b8de145d41
 }

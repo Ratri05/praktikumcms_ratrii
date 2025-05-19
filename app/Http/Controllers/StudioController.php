@@ -92,18 +92,4 @@ class StudioController extends Controller
         return view('studio.index', ['studio' => $studioList])
             ->with('success', 'Studio berhasil dihapus (simulasi).');
     }
-<<<<<<< HEAD
-    public function confirmDelete($id)
-{
-    $studioArray = collect($this->getDummyData())->firstWhere('id', (int)$id);
-    if (!$studioArray) {
-        abort(404);
-    }
-    $studio = (object) $studioArray;
-    return view('studio.confirmDelete', compact('studio'));
-}
-
-
-=======
->>>>>>> 350667786e238237a3b63676329cf4b8de145d41
 }

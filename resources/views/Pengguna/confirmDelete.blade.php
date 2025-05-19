@@ -1,14 +1,12 @@
 @extends('layouts.app')
+
 @section('content')
-<div class="container">
-    <div class="bg-gold p-3 text-white rounded mb-4">
-        <h2>Hapus Pengguna</h2>
-    </div>
-    <p>Yakin ingin menghapus pengguna <strong>{{ $pengguna->nama }}</strong>?</p>
-    <form action="{{ url('/pengguna/'.$pengguna->id.'/delete') }}" method="POST">
-        @csrf
-        <a href="{{ url('/pengguna') }}" class="btn btn-secondary">Batal</a>
-        <button type="submit" class="btn btn-danger">Hapus</button>
-    </form>
-</div>
-@endsection
+
+<div class="container py-4"> <h2>Konfirmasi Hapus Pengguna</h2> <p>Apakah Anda yakin ingin menghapus pengguna <strong>{{ $pengguna->nama }}</strong>?</p>
+<form action="{{ route('pengguna.destroy', $pengguna->id) }}" method="POST">
+    @csrf
+    @method('DELETE')
+    <button class="btn btn-danger">Hapus</button>
+    <a href="{{ route('pengguna.index') }}" class="btn btn-secondary">Batal</a>
+</form>
+</div> @endsection

@@ -17,24 +17,13 @@
         <tbody>
             @foreach($tiket as $t)
             <tr>
-<<<<<<< HEAD
                 <td>{{ $t['nomor_kursi'] }}</td>
                 <td>{{ $t['status'] }}</td>
                 <td>Rp {{ number_format($t['harga_tiket'], 0, ',', '.') }}</td>
                 <td>
-                    <td>
-    <a href="{{ url('/tiket/'.$t['id']) }}" class="btn btn-sm btn-primary">Lihat</a>
-    <a href="{{ url('/tiket/'.$t['id'].'/edit') }}" class="btn btn-sm btn-warning">Edit</a>
-    <a href="{{ url('/tiket/'.$t['id'].'/delete') }}" class="btn btn-sm btn-danger">Hapus</a>
-=======
-                <td>{{ $t->nomor_kursi }}</td>
-                <td>{{ $t->status }}</td>
-                <td>Rp {{ number_format($t->harga_tiket, 0, ',', '.') }}</td>
-                <td>
-                    <a href="{{ url('/tiket/'.$t->id) }}" class="btn btn-sm btn-primary">Lihat</a>
-                    <a href="{{ url('/tiket/'.$t->id.'/edit') }}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{{ url('/tiket/'.$t->id.'/delete') }}" class="btn btn-sm btn-danger">Hapus</a>
->>>>>>> 350667786e238237a3b63676329cf4b8de145d41
+                    <a href="{{ url('/tiket/'.$t['id']) }}" class="btn btn-sm btn-primary">Lihat</a>
+                    <a href="{{ url('/tiket/'.$t['id'].'/edit') }}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{{ url('/tiket/'.$t['id'].'/delete') }}" class="btn btn-sm btn-danger">Hapus</a>
                 </td>
             </tr>
             @endforeach
