@@ -1,19 +1,64 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="container">
-    <h1>Detail Karyawan</h1>
+@section('title', 'Detail Karyawan')
 
-    <div class="card">
+@section('content')
+<div class="container mt-5">
+    <h1 class="text-center text-gold mb-4" style="font-family: 'Cinzel', serif;">
+        🍿 Detail Karyawan Bioskop
+    </h1>
+
+    <div class="card shadow-lg border-0" style="background-color: #1e1e1e; color: white;">
+        <div class="card-header bg-gold">
+            <h4 class="mb-0">
+                🎬 {{ $karyawan->nama }}
+            </h4>
+        </div>
         <div class="card-body">
-            <h5 class="card-title">{{ $karyawan->nama }}</h5>
-            <p class="card-text"><strong>Posisi:</strong> {{ $karyawan->posisi }}</p>
-            <p class="card-text"><strong>Jadwal Kerja:</strong> {{ $karyawan->jadwal_kerja }}</p>
-            <p class="card-text"><strong>No Telepon:</strong> {{ $karyawan->no_telepon }}</p>
-            <p class="card-text"><strong>Alamat:</strong> {{ $karyawan->alamat }}</p>
+            <p class="card-text mb-2">
+                <strong class="text-gold">📌 Posisi:</strong> {{ $karyawan->posisi }}
+            </p>
+            <p class="card-text mb-2">
+                <strong class="text-gold">🕒 Jadwal Kerja:</strong> {{ $karyawan->jadwal_kerja }}
+            </p>
+            <p class="card-text mb-2">
+                <strong class="text-gold">📞 No Telepon:</strong> {{ $karyawan->no_telepon }}
+            </p>
+            <p class="card-text">
+                <strong class="text-gold">📍 Alamat:</strong> {{ $karyawan->alamat }}
+            </p>
         </div>
     </div>
 
-    <a href="{{ route('karyawan.index') }}" class="btn btn-secondary mt-3">Kembali</a>
+    <div class="text-center mt-4">
+        <a href="{{ route('karyawan.index') }}" class="btn btn-gold">
+            ⬅️ Kembali ke Daftar Karyawan
+        </a>
+    </div>
 </div>
+
+<style>
+    .text-gold {
+        color: #D4AF37;
+    }
+
+    .bg-gold {
+        background-color: #D4AF37;
+        color: #1e1e1e;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .btn-gold {
+        background-color: #D4AF37;
+        color: #1e1e1e;
+        border: none;
+        font-weight: bold;
+    }
+
+    .btn-gold:hover {
+        background-color: #b7950b;
+        color: white;
+    }
+</style>
 @endsection
