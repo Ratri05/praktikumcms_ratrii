@@ -7,6 +7,7 @@ use App\Http\Controllers\FilmController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\TiketController;
 use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\ImageController;
 
 // Hapus salah satu route root agar tidak bentrok, misal arahkan ke home
 Route::get('/', function () {
@@ -79,3 +80,8 @@ Route::get('/transaksi/{id}/edit', [TransaksiController::class, 'edit'])->name('
 Route::put('/transaksi/{id}', [TransaksiController::class, 'update'])->name('transaksi.update');
 Route::get('/transaksi/{id}/delete', [TransaksiController::class, 'confirmDelete'])->name('transaksi.confirmDelete');
 Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
+
+Route::get('/upload', [ImageController::class, 'create']);
+Route::post('/upload', [ImageController::class, 'store'])->name('image.upload');
+Route::delete('/upload/{id}', [ImageController::class, 'destroy'])->name('image.delete');
+
