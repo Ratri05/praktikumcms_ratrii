@@ -8,7 +8,7 @@
         <img src="https://img.icons8.com/emoji/48/000000/popcorn-emoji.png" alt="Popcorn" class="popcorn-icon">
         <h1>🎬 Selamat Datang di Sistem Reservasi Bioskop 🍿</h1>
         <p class="tagline">Nikmati pengalaman nonton yang luar biasa!</p>
-    </div>
+    </div>z
 
     <div class="menu-grid">
         <a href="{{ route('films.index') }}" class="menu-card">
