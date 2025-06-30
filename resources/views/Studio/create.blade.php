@@ -3,34 +3,54 @@
 @section('title', 'Tambah Studio')
 
 @section('content')
-<div class="container mt-4">
-    <div class="bg-gold p-4 text-white rounded shadow text-center" style="font-family: 'Cinzel', serif; font-weight: 700;">
-        <h2>🎬 Tambah Studio Baru</h2>
-        <p class="mb-0" style="font-size: 1.1rem;">Isi data studio untuk menambah ruang pertunjukan baru</p>
-    </div>
+<div class="container mt-5">
+    <h1 class="text-center text-gold mb-4" style="font-family: 'Cinzel', serif;">
+        🎬 Tambah Studio Baru - Sistem Bioskop
+    </h1>
 
-    <form action="{{ url('/studio') }}" method="POST" class="mt-4">
-        @csrf
-        @include('studio.form')
+    <div class="card shadow-lg border-0" style="background-color: #1e1e1e; color: white;">
+        <div class="card-body">
+            {{-- Tampilkan error jika ada --}}
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        <div class="d-flex justify-content-center mt-4">
-            <button type="submit" class="btn btn-gold btn-lg shadow">
-                <i class="bi bi-plus-circle me-2"></i> Simpan Studio
-            </button>
+            <form action="{{ route('studio.store') }}" method="POST">
+                @include('studio.form')
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-gold">
+                        🎟️ Simpan Studio
+                    </button>
+                    <a href="{{ route('studio.index') }}" class="btn btn-secondary ms-2">
+                        ❌ Batal
+                    </a>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 <style>
+    .text-gold {
+        color: #D4AF37;
+    }
+
     .btn-gold {
         background-color: #D4AF37;
-        color: #1c1c1c;
+        color: #1e1e1e;
+        font-weight: bold;
         border: none;
-        font-weight: 600;
-        transition: background-color 0.3s ease;
     }
+
     .btn-gold:hover {
-        background-color: #b88a05;
+        background-color: #b7950b;
         color: white;
     }
 </style>

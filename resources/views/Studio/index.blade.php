@@ -4,54 +4,78 @@
 
 @section('content')
 <div class="container mt-4">
-    <div class="bg-gold text-center p-4 rounded shadow-sm mb-4" style="background-image: url('/images/red-curtain.jpg'); background-size: cover; background-position: center;">
-        <h2 class="text-white fw-bold" style="font-family: 'Cinzel', serif;">🎥 Studio Bioskop</h2>
-        <p class="text-white-50">Tempat terbaik menikmati layar lebar</p>
+    <h1 class="text-gold text-center mb-4" style="font-family: 'Cinzel', serif;">🎥 Daftar Studio Bioskop</h1>
+
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{{ route('studio.create') }}" class="btn btn-gold shadow">
+            ➕ Tambah Studio
+        </a>
     </div>
 
-    <div class="text-end mb-3">
-        <a href="{{ url('/studio/create') }}" class="btn btn-gold shadow-sm">+ Tambah Studio</a>
-    </div>
+    @if (session('success'))
+        <div class="alert alert-success text-center">
+            {{ session('success') }}
+        </div>
+    @endif
 
-    <div class="row">
-        @forelse($studio as $s)
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow" style="background-color: #1e1e1e; color: white;">
-                    <div class="card-header text-center bg-gold text-dark fw-bold">
-                        🎬 Studio {{ $s->nomor_studio }}
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Kapasitas:</strong> {{ $s->kapasitas }} penonton</p>
-                        <p><strong>Tipe Studio:</strong> {{ $s->tipe_studio }}</p>
-                    </div>
-                    <div class="card-footer bg-transparent text-center">
-                        <a href="{{ url('/studio/'.$s->id) }}" class="btn btn-primary btn-sm me-1">📄 Lihat</a>
-                        <a href="{{ url('/studio/'.$s->id.'/edit') }}" class="btn btn-warning btn-sm me-1">✏️ Edit</a>
-                        <a href="{{ url('/studio/'.$s->id.'/delete') }}" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin hapus studio ini?')">🗑️ Hapus</a>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <p class="text-center">Tidak ada data studio.</p>
-        @endforelse
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-white" style="background-color: #1e1e1e; border-color: gold;">
+            <thead class="bg-dark text-gold">
+                <tr>
+                    <th>Nomor Studio</th>
+                    <th>Kapasitas</th>
+                    <th>Tipe</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($studios as $studio)
+                    <tr>
+                        <td>{{ $studio->nomor_studio }}</td>
+                        <td>{{ $studio->kapasitas }}</td>
+                        <td>{{ $studio->tipe }}</td>
+                        <td>
+                            <a href="{{ route('studio.show', $studio->id) }}" class="btn btn-sm btn-info mb-1">👁️ Detail</a>
+                            <a href="{{ route('studio.edit', $studio->id) }}" class="btn btn-sm btn-warning mb-1">✏️ Edit</a>
+                            <form action="{{ route('studio.destroy', $studio->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-sm btn-danger mb-1" onclick="return confirm('Yakin ingin menghapus studio ini?')">🗑️ Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 
 <style>
-    .bg-gold {
-        background-color: #D4AF37 !important;
+    .text-gold {
+        color: gold;
     }
 
     .btn-gold {
         background-color: #D4AF37;
-        color: #1e1e1e;
-        font-weight: bold;
-        border: none;
+        color: white;
+        font-weight: 600;
     }
 
     .btn-gold:hover {
         background-color: #b7950b;
         color: white;
+    }
+
+    table thead tr {
+        border-bottom: 2px solid gold;
+    }
+
+    table tbody tr:hover {
+        background-color: #2c2c2c;
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
     }
 </style>
 @endsection

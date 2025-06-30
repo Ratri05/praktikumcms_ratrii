@@ -3,20 +3,35 @@
 @section('title', 'Edit Studio')
 
 @section('content')
-<div class="container mt-4">
-    <div class="bg-gold p-4 text-white rounded shadow text-center" style="background-image: url('/images/red-curtain.jpg'); background-size: cover;">
-        <h2 class="fw-bold" style="font-family: 'Cinzel', serif;">🎬 Edit Studio Bioskop</h2>
-        <p class="mb-0">Perbarui informasi studio seperti kapasitas dan tipe studio</p>
-    </div>
+<div class="container mt-5">
+    <h1 class="text-center text-gold mb-4" style="font-family: 'Cinzel', serif;">
+        ✏️ Edit Studio #{{ $studio->id }}
+    </h1>
 
-    <div class="card mt-4 shadow" style="border: none; background-color: #2c2c2c; color: white;">
+    <div class="card shadow-lg border-0" style="background-color: #1e1e1e; color: white;">
         <div class="card-body">
-            <form action="{{ url('/studio/'.$studio->id) }}" method="POST">
-                @csrf
+            {{-- Tampilkan error jika ada --}}
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('studio.update', $studio->id) }}" method="POST">
                 @method('PUT')
-                @include('studio.form', ['studio' => $studio])
-                <div class="text-end">
-                    <button type="submit" class="btn btn-gold shadow">🎥 Update Studio</button>
+                @include('studio.form')
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-gold">
+                        💾 Update Studio
+                    </button>
+                    <a href="{{ route('studio.index') }}" class="btn btn-secondary ms-2">
+                        ❌ Batal
+                    </a>
                 </div>
             </form>
         </div>
@@ -24,28 +39,20 @@
 </div>
 
 <style>
+    .text-gold {
+        color: #D4AF37;
+    }
+
     .btn-gold {
         background-color: #D4AF37;
         color: #1e1e1e;
         font-weight: bold;
         border: none;
-        transition: background 0.3s ease;
     }
 
     .btn-gold:hover {
         background-color: #b7950b;
         color: white;
-    }
-
-    input.form-control, select.form-select, textarea.form-control {
-        background-color: #f5f5dc;
-        border: 1px solid #d4af37;
-        color: #1e1e1e;
-    }
-
-    label {
-        font-weight: bold;
-        color: #f1c40f;
     }
 </style>
 @endsection

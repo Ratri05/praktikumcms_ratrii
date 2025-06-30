@@ -2,42 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
 {
-    // Method untuk mendapatkan data dummy transaksi
-    private function getDummyData()
-    {
-        return [
-            (object)[
-                'id' => 1,
-                'tanggal_transaksi' => '2025-05-01',
-                'metode_pembayaran' => 'E-Wallet',
-                'total_pembayaran' => 100000
-            ],
-            (object)[
-                'id' => 2,
-                'tanggal_transaksi' => '2025-05-02',
-                'metode_pembayaran' => 'Tunai',
-                'total_pembayaran' => 50000
-            ]
-        ];
-    }
-
     public function index()
     {
-        $transaksi = $this->getDummyData();
-        return view('transaksi.index', compact('transaksi'));
-    }
-
-    public function show($id)
-    {
-        $transaksi = collect($this->getDummyData())->firstWhere('id', $id);
-        if (!$transaksi) {
-            abort(404, 'Transaksi tidak ditemukan.');
-        }
-        return view('transaksi.show', compact('transaksi'));
+        $transaksis = Transaksi::all();
+        return view('transaksi.index', compact('transaksis'));
     }
 
     public function create()
@@ -47,72 +20,53 @@ class TransaksiController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'tanggal_transaksi' => 'required|date',
-            'metode_pembayaran' => 'required|string',
-            'total_pembayaran' => 'required|numeric'
+        $request->validate([
+            'Tanggal_Transaksi' => 'required|date',
+            'Metode_Pembayaran' => 'required|string|max:30',
+            'Total_Pembayaran' => 'required|numeric',
+            'PENGGUNA_ID' => 'required|integer|exists:pengguna,id',
+            'TIKET_ID' => 'required|integer|exists:tiket,id',
         ]);
 
-        $newTransaksi = (object)[
-            'id' => rand(3, 100),
-            'tanggal_transaksi' => $validated['tanggal_transaksi'],
-            'metode_pembayaran' => $validated['metode_pembayaran'],
-            'total_pembayaran' => $validated['total_pembayaran']
-        ];
+        Transaksi::create($request->all());
 
-        $transaksi = $this->getDummyData();
-        $transaksi[] = $newTransaksi;
+        return redirect('/transaksi')->with('success', 'Transaksi berhasil ditambahkan.');
+    }
 
-        return view('transaksi.index', compact('transaksi'))
-            ->with('success', 'Transaksi berhasil ditambahkan (simulasi).');
+    public function show($id)
+    {
+        $transaksi = Transaksi::findOrFail($id);
+        return view('transaksi.show', compact('transaksi'));
     }
 
     public function edit($id)
     {
-        $transaksi = collect($this->getDummyData())->firstWhere('id', $id);
-        if (!$transaksi) {
-            abort(404, 'Transaksi tidak ditemukan.');
-        }
+        $transaksi = Transaksi::findOrFail($id);
         return view('transaksi.edit', compact('transaksi'));
     }
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'tanggal_transaksi' => 'required|date',
-            'metode_pembayaran' => 'required|string',
-            'total_pembayaran' => 'required|numeric'
+        $transaksi = Transaksi::findOrFail($id);
+
+        $request->validate([
+            'Tanggal_Transaksi' => 'required|date',
+            'Metode_Pembayaran' => 'required|string|max:30',
+            'Total_Pembayaran' => 'required|numeric',
+            'PENGGUNA_ID' => 'required|integer|exists:pengguna,id',
+            'TIKET_ID' => 'required|integer|exists:tiket,id',
         ]);
 
-        $transaksiList = collect($this->getDummyData())->map(function ($transaksi) use ($id, $validated) {
-            if ($transaksi->id == $id) {
-                $transaksi->tanggal_transaksi = $validated['tanggal_transaksi'];
-                $transaksi->metode_pembayaran = $validated['metode_pembayaran'];
-                $transaksi->total_pembayaran = $validated['total_pembayaran'];
-            }
-            return $transaksi;
-        })->all();
+        $transaksi->update($request->all());
 
-        return view('transaksi.index', ['transaksi' => $transaksiList])
-            ->with('success', 'Transaksi berhasil diperbarui (simulasi).');
+        return redirect('/transaksi')->with('success', 'Transaksi berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $transaksiList = collect($this->getDummyData())->reject(function ($transaksi) use ($id) {
-            return $transaksi->id == $id;
-        })->values()->all();
+        $transaksi = Transaksi::findOrFail($id);
+        $transaksi->delete();
 
-        return view('transaksi.index', ['transaksi' => $transaksiList])
-            ->with('success', 'Transaksi berhasil dihapus (simulasi).');
-    }
-
-    public function confirmDelete($id)
-    {
-        $transaksi = collect($this->getDummyData())->firstWhere('id', (int)$id);
-        if (!$transaksi) {
-            abort(404, 'Transaksi tidak ditemukan.');
-        }
-        return view('transaksi.confirmDelete', compact('transaksi'));
+        return redirect('/transaksi')->with('success', 'Transaksi berhasil dihapus.');
     }
 }

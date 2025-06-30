@@ -2,38 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tiket;
 use Illuminate\Http\Request;
 
 class TiketController extends Controller
 {
-    private function getDummyData()
-    {
-        return [
-            [
-                'id' => 1,
-                'nomor_kursi' => 'A1',
-                'status' => 'Tersedia',
-                'harga_tiket' => 50000,
-                'film' => 'Avengers',
-                'studio' => 'Studio 1',
-                'jadwal' => '10:00',
-            ],
-            [
-                'id' => 2,
-                'nomor_kursi' => 'B2',
-                'status' => 'Terjual',
-                'harga_tiket' => 45000,
-                'film' => 'Frozen',
-                'studio' => 'Studio 2',
-                'jadwal' => '13:00',
-            ],
-        ];
-    }
-
     public function index()
     {
-        $tiket = $this->getDummyData();
-        return view('tiket.index', compact('tiket'));
+        $tikets = Tiket::all();
+        return view('tiket.index', compact('tikets'));
     }
 
     public function create()
@@ -43,46 +20,51 @@ class TiketController extends Controller
 
     public function store(Request $request)
     {
-        return redirect()->route('tiket.index')->with('success', 'Data tiket berhasil disimpan (simulasi).');
+        $request->validate([
+            'Nomor_Kursi' => 'required|string|max:30',
+            'Status' => 'required|string|max:30',
+            'Harga_Tiket' => 'required|numeric',
+            'FILM_ID' => 'required|integer|exists:film,id',
+        ]);
+
+        Tiket::create($request->all());
+
+        return redirect('/tiket')->with('success', 'Tiket berhasil ditambahkan.');
     }
 
     public function show($id)
     {
-        $tiketArray = collect($this->getDummyData())->firstWhere('id', (int)$id);
-        if (!$tiketArray) {
-            abort(404);
-        }
-        $tiket = (object) $tiketArray;
+        $tiket = Tiket::findOrFail($id);
         return view('tiket.show', compact('tiket'));
     }
 
     public function edit($id)
     {
-        $tiketArray = collect($this->getDummyData())->firstWhere('id', (int)$id);
-        if (!$tiketArray) {
-            abort(404);
-        }
-        $tiket = (object) $tiketArray;
+        $tiket = Tiket::findOrFail($id);
         return view('tiket.edit', compact('tiket'));
     }
 
     public function update(Request $request, $id)
     {
-        return redirect()->route('tiket.index')->with('success', 'Data tiket berhasil diperbarui (simulasi).');
-    }
+        $tiket = Tiket::findOrFail($id);
 
-    public function confirmDelete($id)
-    {
-        $tiketArray = collect($this->getDummyData())->firstWhere('id', (int)$id);
-        if (!$tiketArray) {
-            abort(404);
-        }
-        $tiket = (object) $tiketArray;
-        return view('tiket.confirmDelete', compact('tiket'));
+        $request->validate([
+            'Nomor_Kursi' => 'required|string|max:30',
+            'Status' => 'required|string|max:30',
+            'Harga_Tiket' => 'required|numeric',
+            'FILM_ID' => 'required|integer|exists:film,id',
+        ]);
+
+        $tiket->update($request->all());
+
+        return redirect('/tiket')->with('success', 'Tiket berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        return redirect()->route('tiket.index')->with('success', 'Data tiket berhasil dihapus (simulasi).');
+        $tiket = Tiket::findOrFail($id);
+        $tiket->delete();
+
+        return redirect('/tiket')->with('success', 'Tiket berhasil dihapus.');
     }
 }

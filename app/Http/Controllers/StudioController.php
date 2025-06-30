@@ -2,39 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Studio;
 use Illuminate\Http\Request;
 
 class StudioController extends Controller
 {
-    private function getDummyData()
-    {
-        return [
-            (object)[
-                'id' => 1,
-                'nomor_studio' => '1',
-                'kapasitas' => 100,
-                'tipe_studio' => 'Reguler'
-            ],
-            (object)[
-                'id' => 2,
-                'nomor_studio' => '2',
-                'kapasitas' => 50,
-                'tipe_studio' => 'VIP'
-            ]
-        ];
-    }
-
     public function index()
     {
-        $studio = $this->getDummyData();
-        return view('studio.index', compact('studio'));
-    }
-
-    public function show($id)
-    {
-        $studio = collect($this->getDummyData())->firstWhere('id', $id);
-        if (!$studio) abort(404, 'Studio tidak ditemukan.');
-        return view('studio.show', compact('studio'));
+        $studios = Studio::all();
+        return view('studio.index', compact('studios'));
     }
 
     public function create()
@@ -44,52 +20,57 @@ class StudioController extends Controller
 
     public function store(Request $request)
     {
-        // Simulasi simpan data
-        $newStudio = (object)[
-            'id' => rand(3, 100), // Simulasi ID baru
-            'nomor_studio' => $request->nomor_studio,
-            'kapasitas' => $request->kapasitas,
-            'tipe_studio' => $request->tipe_studio
-        ];
+        $request->validate([
+            'Nomor_Studio' => 'required|integer',
+            'Kapasitas' => 'required|integer',
+            'Tipe_Studio' => 'required|string|max:30',
+            'TIKET_ID' => 'nullable|integer|exists:tiket,id',
+        ]);
 
-        // Return kembali ke index (dummy)
-        $studio = $this->getDummyData();
-        $studio[] = $newStudio;
+        Studio::create($request->all());
 
-        return view('studio.index', compact('studio'))->with('success', 'Studio baru ditambahkan (simulasi).');
+        return redirect('/studio')->with('success', 'Studio berhasil ditambahkan.');
+    }
+
+    public function show($id)
+    {
+        $studio = Studio::findOrFail($id);
+        return view('studio.show', compact('studio'));
     }
 
     public function edit($id)
     {
-        $studio = collect($this->getDummyData())->firstWhere('id', $id);
-        if (!$studio) abort(404, 'Studio tidak ditemukan.');
+        $studio = Studio::findOrFail($id);
         return view('studio.edit', compact('studio'));
     }
 
     public function update(Request $request, $id)
     {
-        // Simulasi update
-        $studioList = collect($this->getDummyData())->map(function ($studio) use ($id, $request) {
-            if ($studio->id == $id) {
-                $studio->nomor_studio = $request->nomor_studio;
-                $studio->kapasitas = $request->kapasitas;
-                $studio->tipe_studio = $request->tipe_studio;
-            }
-            return $studio;
-        })->all();
+        $studio = Studio::findOrFail($id);
 
-        return view('studio.index', ['studio' => $studioList])
-            ->with('success', 'Data studio berhasil diubah (simulasi).');
+        $request->validate([
+            'Nomor_Studio' => 'required|integer',
+            'Kapasitas' => 'required|integer',
+            'Tipe_Studio' => 'required|string|max:30',
+            'TIKET_ID' => 'nullable|integer|exists:tiket,id',
+        ]);
+
+        $studio->update($request->all());
+
+        return redirect('/studio')->with('success', 'Studio berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        // Simulasi hapus
-        $studioList = collect($this->getDummyData())->reject(function ($studio) use ($id) {
-            return $studio->id == $id;
-        })->values()->all();
+        $studio = Studio::findOrFail($id);
+        $studio->delete();
 
-        return view('studio.index', ['studio' => $studioList])
-            ->with('success', 'Studio berhasil dihapus (simulasi).');
+        return redirect('/studio')->with('success', 'Studio berhasil dihapus.');
     }
+    public function confirmDelete($id)
+{
+    $studio = \App\Models\Studio::findOrFail($id);
+    return view('studio.confirmDelete', compact('studio'));
+}
+
 }

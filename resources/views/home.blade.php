@@ -15,6 +15,10 @@
             <img src="https://img.icons8.com/ios-filled/50/ffffff/movie-projector.png" alt="Film">
             <span>Film</span>
         </a>
+        <a href="{{ route('studio.index') }}" class="menu-card">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/theatre-mask.png" alt="Studio">
+            <span>Studio</span>
+        </a>
         <a href="{{ route('karyawan.index') }}" class="menu-card">
             <img src="https://img.icons8.com/ios-filled/50/ffffff/staff.png" alt="Karyawan">
             <span>Karyawan</span>
